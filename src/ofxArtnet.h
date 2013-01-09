@@ -24,6 +24,7 @@ class ofxArtnet : public ofThread
 {
 public:
     static int nodes_found;
+    static vector<string> foundedIps;
     string SHORT_NAME;
     string LONG_NAME;
     static status_artnet status;
@@ -49,21 +50,24 @@ public:
     void sendDmx( string targetIp, const unsigned char* data512, int size );
 
     
-    private:
+private:
     int static reply_handler(artnet_node n, void *pp, void *d) {
         artnet_node_list nl = artnet_get_nl(n);
         if (ofxArtnet::nodes_found == artnet_nl_get_length(nl)) {
             // this is not a new node, just a previously discovered one sending
             // another reply
             return 0;
-        } else if(ofxArtnet::nodes_found == 0) {
-            // first node found
-            ofxArtnet::nodes_found++;
-            print_node_config(artnet_nl_first(nl));
         } else {
-            // new node
+            artnet_node_entry ne;
+            if ( ofxArtnet::nodes_found == 0 ) ne = artnet_nl_first(nl);
+            else artnet_node_entry ne = artnet_nl_next(nl);
+            
+            char ips[50] = "";
+            sprintf(ips,"%d.%d.%d.%d", ne->ip[0], ne->ip[1], ne->ip[2], ne->ip[3]);
+            foundedIps.push_back(ips);
+            
             ofxArtnet::nodes_found++;
-            print_node_config(artnet_nl_next(nl));
+            print_node_config(ne);
         }
         return 0;
     }

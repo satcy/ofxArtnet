@@ -8,6 +8,7 @@
 #include "ofxArtnet.h"
 
 int ofxArtnet::nodes_found;
+vector<string> ofxArtnet::foundedIps;
 status_artnet ofxArtnet::status;
 
 
