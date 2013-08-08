@@ -48,7 +48,7 @@ public:
     void setup(const char* interfaceIP, int port_addr = 0, int verbose = 0);
     void threadedFunction();
     void sendDmx( string targetIp, const unsigned char* data512, int size );
-
+    void sendDmx( string targetIp, int targetSubnet, int targetUniverse, const unsigned char* data512, int size );
     
 private:
     int static reply_handler(artnet_node n, void *pp, void *d) {
